@@ -12,13 +12,24 @@ def main():
               .format('kafka')
               .option('kafka.bootstrap.servers', 'localhost:9092')
               .option('subscribe', 'input00')
-              .load()
-              .selectExpr('CAST(value AS STRING)', 'topic'))
+              .load())
+
+    source.printSchema()
+
+    source = (source
+              .selectExpr('CAST(value AS STRING)', 'offset'))
+
+    console = (source
+               .writeStream
+               .format('console')
+               .queryName('console output'))
+    console.start()
 
     query = (source
              .writeStream
              .outputMode('append')
              .format('kafka')
+             .queryName('kafka output')
              .option('kafka.bootstrap.servers', 'localhost:9092')
              .option('topic', 'output00')
              .option('checkpointLocation', './.local/checkpoint'))
