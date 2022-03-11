@@ -14,26 +14,23 @@ def main():
               .option('subscribe', 'input00')
               .load())
 
-    source.printSchema()
+    df = (source
+          .selectExpr('CAST(value AS STRING)', 'offset'))
 
-    source = (source
-              .selectExpr('CAST(value AS STRING)', 'offset'))
-
-    console = (source
+    console = (df
                .writeStream
                .format('console')
-               .queryName('console output'))
-    console.start()
+               .queryName('console-output'))
 
-    query = (source
+    query = (df
              .writeStream
-             .outputMode('append')
              .format('kafka')
-             .queryName('kafka output')
+             .queryName('kafka-output')
              .option('kafka.bootstrap.servers', 'localhost:9092')
              .option('topic', 'output00')
              .option('checkpointLocation', './.local/checkpoint'))
 
+    console.start()
     query.start().awaitTermination()
 
 

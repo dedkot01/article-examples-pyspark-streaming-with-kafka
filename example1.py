@@ -11,15 +11,15 @@ def main():
               .readStream
               .format('kafka')
               .option('kafka.bootstrap.servers', 'localhost:9092')
-              .option('subscribe', 'input00')
+              .option('subscribe', 'input00,input01')
               .load())
 
     source.printSchema()
 
-    source = (source
-              .selectExpr('CAST(value AS STRING)', 'offset'))
+    df = (source
+          .selectExpr('CAST(value AS STRING)', 'offset'))
 
-    console = (source
+    console = (df
                .writeStream
                .format('console')
                .queryName('console output'))
