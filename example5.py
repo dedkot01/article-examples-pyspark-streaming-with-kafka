@@ -1,8 +1,14 @@
 def main():
+    import json
+
     from pyspark.sql import SparkSession
     from pyspark.sql.avro import functions as fa
+    from schema_registry.client import SchemaRegistryClient
 
-    schema = open('schema_example4.avsc', 'r').read()
+    sr = SchemaRegistryClient('http://localhost:8081')
+    schema: str = json.dumps(sr.get_schema(subject='Person', version='latest')
+                             .schema
+                             .flat_schema)
 
     spark = (SparkSession
              .builder
@@ -19,10 +25,9 @@ def main():
 
     df = (source
           .select(fa.from_avro('value', schema).alias('data')))
+
     print("df schema")
     df.printSchema()
-
-    df = df.where(df['data.age'] >= 18)
 
     console = df.select('data.*')
     print("console schema")
@@ -33,7 +38,8 @@ def main():
                .format('console')
                .queryName('console-output'))
 
-    df = df.withColumn('value', fa.to_avro('data', schema))
+    df = df.where(df['data.age'] >= 18)
+    df = df.withColumn('value', fa.to_avro('data'))
 
     query = (df
              .writeStream
