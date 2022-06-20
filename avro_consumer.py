@@ -6,7 +6,7 @@ def main():
 
     spark = (SparkSession
              .builder
-             .appName('streaming-kafka')
+             .appName('kafka-avro-consumer')
              .getOrCreate())
     spark.sparkContext.setLogLevel('WARN')
 

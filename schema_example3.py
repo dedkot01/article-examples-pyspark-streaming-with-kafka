@@ -1,8 +1,8 @@
-from pyspark.sql.types import IntegerType, StringType, StructField, StructType
+from pyspark.sql import types as t
 
-schema = StructType(
+schema = t.StructType(
     [
-        StructField('name', StringType(), True),
-        StructField('age', IntegerType(), True),
+        t.StructField('name', t.StringType(), True),
+        t.StructField('age', t.IntegerType(), True),
     ],
 )
