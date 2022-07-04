@@ -1,4 +1,4 @@
-Данный репозиторий создан для хранения примеров к [статье](https://github.com/dedkot01/article-pyspark-streaming-with-kafka/blob/main/ARTICLE.md).
+Данный репозиторий создан для хранения примеров к [статье](https://habr.com/ru/company/neoflex/blog/674944/).
 
 Команды запуска:
 
